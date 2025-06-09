@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "191806274632",
+    "project_id": "project-uap-22e0e",
+    "storage_bucket": "project-uap-22e0e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:191806274632:android:2d2731c69429bd6fcc6c7d",
+        "android_client_info": {
+          "package_name": "com.example.uap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAamPjgyr-enQDy0aJLL2cFcV6tquF71xA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
