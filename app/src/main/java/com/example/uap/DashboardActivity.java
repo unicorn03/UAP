@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.Toast;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,31 +28,26 @@ public class DashboardActivity extends AppCompatActivity {
     RecyclerView recyclerViewTanaman;
     Button btnTambahList;
     SwipeRefreshLayout swipeRefresh;
-    ProgressBar progressBar;
     ArrayList<Plant> dataList;
     PlantAdapter adapter;
     ApiService apiService;
 
-    // Activity Result Launchers
     private ActivityResultLauncher<Intent> addTanamanLauncher;
     private ActivityResultLauncher<Intent> updateTanamanLauncher;
+    private ActivityResultLauncher<Intent> detailTanamanLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
 
-        // Initialize Activity Result Launchers
         setupActivityLaunchers();
 
-        // Initialize API service
         apiService = ApiClient.getClient().create(ApiService.class);
 
-        // Initialize views
         recyclerViewTanaman = findViewById(R.id.recyclerViewTanaman);
         btnTambahList = findViewById(R.id.btnTambahList);
         swipeRefresh = findViewById(R.id.swipeRefresh);
-        progressBar = findViewById(R.id.progressBar);
 
         dataList = new ArrayList<>();
 
@@ -72,7 +65,7 @@ public class DashboardActivity extends AppCompatActivity {
                 intent.putExtra("harga", plant.getPrice());
                 intent.putExtra("deskripsi", plant.getDescription());
                 intent.putExtra("gambarResId", R.drawable.tanaman_dua);
-                startActivity(intent);
+                detailTanamanLauncher.launch(intent);
             }
 
             @Override
@@ -90,7 +83,6 @@ public class DashboardActivity extends AppCompatActivity {
         recyclerViewTanaman.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTanaman.setAdapter(adapter);
 
-        // Setup swipe to refresh
         swipeRefresh.setOnRefreshListener(this::loadTanamanData);
 
         btnTambahList.setOnClickListener(v -> {
@@ -98,18 +90,15 @@ public class DashboardActivity extends AppCompatActivity {
             addTanamanLauncher.launch(intent);
         });
 
-        // Load initial data
         loadTanamanData();
     }
 
     private void setupActivityLaunchers() {
-        // Launcher for Add Tanaman Activity
         addTanamanLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     Log.d(TAG, "Add Tanaman Result: " + result.getResultCode());
                     if (result.getResultCode() == RESULT_OK) {
-                        // Refresh data when returning from add activity
                         Log.d(TAG, "Data successfully added, refreshing list...");
                         loadTanamanData();
                         Toast.makeText(this, "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show();
@@ -119,13 +108,11 @@ public class DashboardActivity extends AppCompatActivity {
                 }
         );
 
-        // Launcher for Update Tanaman Activity
         updateTanamanLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     Log.d(TAG, "Update Tanaman Result: " + result.getResultCode());
                     if (result.getResultCode() == RESULT_OK) {
-                        // Refresh data when returning from update activity
                         Log.d(TAG, "Data successfully updated, refreshing list...");
                         loadTanamanData();
                         Toast.makeText(this, "Data berhasil diupdate", Toast.LENGTH_SHORT).show();
@@ -134,12 +121,23 @@ public class DashboardActivity extends AppCompatActivity {
                     }
                 }
         );
+
+        detailTanamanLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    Log.d(TAG, "Detail Tanaman Result: " + result.getResultCode());
+                    if (result.getResultCode() == RESULT_OK) {
+                        Log.d(TAG, "Data updated from detail, refreshing list...");
+                        loadTanamanData();
+                        Toast.makeText(this, "Data berhasil diupdate", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        // Only refresh if we're returning from another activity, not on first load
         if (dataList.size() > 0) {
             Log.d(TAG, "onResume: Refreshing data...");
             loadTanamanData();
@@ -148,7 +146,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void loadTanamanData() {
         Log.d(TAG, "Loading tanaman data...");
-        showLoading(true);
 
         Call<PlantResponse> call = apiService.getAllPlants();
         call.enqueue(new Callback<PlantResponse>() {
@@ -157,7 +154,6 @@ public class DashboardActivity extends AppCompatActivity {
                 Log.d(TAG, "Response code: " + response.code());
                 Log.d(TAG, "Response body: " + (response.body() != null ? response.body().toString() : "null"));
 
-                showLoading(false);
                 swipeRefresh.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -192,7 +188,6 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<PlantResponse> call, Throwable t) {
                 Log.e(TAG, "Network error: " + t.getMessage(), t);
-                showLoading(false);
                 swipeRefresh.setRefreshing(false);
                 Toast.makeText(DashboardActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
@@ -201,8 +196,6 @@ public class DashboardActivity extends AppCompatActivity {
 
     private void deleteTanaman(int position) {
         Plant plant = dataList.get(position);
-
-        // Show confirmation dialog
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Konfirmasi Hapus")
                 .setMessage("Yakin ingin menghapus " + plant.getPlant_name() + "?")
@@ -221,7 +214,6 @@ public class DashboardActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     dataList.remove(position);
                     adapter.notifyItemRemoved(position);
-                    // Update positions for remaining items
                     adapter.notifyItemRangeChanged(position, dataList.size());
                     Toast.makeText(DashboardActivity.this,
                             "Data berhasil dihapus", Toast.LENGTH_SHORT).show();
@@ -237,11 +229,5 @@ public class DashboardActivity extends AppCompatActivity {
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void showLoading(boolean show) {
-        if (progressBar != null) {
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
     }
 }

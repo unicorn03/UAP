@@ -7,39 +7,49 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.uap.models.PlantRequest;
+import com.example.uap.models.Plant;
+import com.example.uap.models.PlantSingleResponse;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class TambahTanamanActivity extends AppCompatActivity {
+public class UpdateTanamanActivity extends AppCompatActivity {
     EditText etNama, etHarga, etDeskripsi;
-    Button btnTambah;
+    Button btnUpdate;
     ImageView imgTanaman;
     ProgressBar progressBar;
     ApiService apiService;
+    String originalNama;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tambah_tanaman);
-
+        setContentView(R.layout.activity_update_tanaman);
         apiService = ApiClient.getClient().create(ApiService.class);
 
         etNama = findViewById(R.id.etNama);
         etHarga = findViewById(R.id.etHarga);
         etDeskripsi = findViewById(R.id.etDeskripsi);
-        btnTambah = findViewById(R.id.btnTambah);
+        btnUpdate = findViewById(R.id.btnUpdate);
         imgTanaman = findViewById(R.id.imgTanaman);
-        progressBar = findViewById(R.id.progressBar);
-        imgTanaman.setImageResource(R.drawable.tanaman_dua);
 
-        btnTambah.setOnClickListener(v -> {
+        originalNama = getIntent().getStringExtra("nama");
+        String harga = getIntent().getStringExtra("harga");
+        String deskripsi = getIntent().getStringExtra("deskripsi");
+        int gambarResId = getIntent().getIntExtra("gambarResId", R.drawable.tanaman_dua);
+
+        etNama.setText(originalNama);
+        etHarga.setText(harga);
+        etDeskripsi.setText(deskripsi);
+        imgTanaman.setImageResource(gambarResId);
+
+        btnUpdate.setOnClickListener(v -> {
             if (validateInput()) {
-                tambahTanaman();
+                updateTanaman();
             }
         });
     }
@@ -70,67 +80,49 @@ public class TambahTanamanActivity extends AppCompatActivity {
         return true;
     }
 
-    private void tambahTanaman() {
+    private void updateTanaman() {
         String nama = etNama.getText().toString().trim();
         String harga = etHarga.getText().toString().trim();
         String deskripsi = etDeskripsi.getText().toString().trim();
 
-        PlantRequest newPlant = new PlantRequest(nama, deskripsi, harga);
+        Plant updatedPlant = new Plant(nama, deskripsi, harga);
 
         showLoading(true);
-        btnTambah.setEnabled(false);
+        btnUpdate.setEnabled(false);
 
-        Call<Void> call = apiService.createPlant(newPlant);
-        call.enqueue(new Callback<Void>() {
+        Call<PlantSingleResponse> call = apiService.updatePlant(originalNama, updatedPlant);
+        call.enqueue(new Callback<PlantSingleResponse>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
+            public void onResponse(Call<PlantSingleResponse> call, Response<PlantSingleResponse> response) {
                 showLoading(false);
-                btnTambah.setEnabled(true);
+                btnUpdate.setEnabled(true);
 
                 if (response.isSuccessful()) {
-                    Toast.makeText(TambahTanamanActivity.this,
-                            "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show();
-
-                    clearInputFields();
-
+                    Toast.makeText(UpdateTanamanActivity.this,
+                            "Data berhasil diupdate", Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK);
                     finish();
                 } else {
-                    try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
-                        Toast.makeText(TambahTanamanActivity.this,
-                                "Gagal menambahkan data: " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(TambahTanamanActivity.this,
-                                "Gagal menambahkan data: " + response.code(), Toast.LENGTH_SHORT).show();
-                    }
+                    Toast.makeText(UpdateTanamanActivity.this,
+                            "Gagal mengupdate data: " + response.code(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
+            public void onFailure(Call<PlantSingleResponse> call, Throwable t) {
                 showLoading(false);
-                btnTambah.setEnabled(true);
-                Toast.makeText(TambahTanamanActivity.this,
+                btnUpdate.setEnabled(true);
+                Toast.makeText(UpdateTanamanActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
-    private void clearInputFields() {
-        etNama.setText("");
-        etHarga.setText("");
-        etDeskripsi.setText("");
-    }
-
     private void showLoading(boolean show) {
-        if (progressBar != null) {
-            progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
         if (show) {
-            btnTambah.setText("Menambahkan...");
+            btnUpdate.setText("Memperbarui...");
         } else {
-            btnTambah.setText("Tambah");
+            btnUpdate.setText("Update");
         }
     }
 }

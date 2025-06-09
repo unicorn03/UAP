@@ -44,12 +44,11 @@ public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> 
         Plant plant = list.get(position);
         holder.txtNama.setText(plant.getPlant_name());
         holder.txtHarga.setText(plant.getPrice());
-        holder.imgTanaman.setImageResource(R.drawable.tanaman_dua); // Default image
+        holder.imgTanaman.setImageResource(R.drawable.tanaman_dua);
 
         holder.btnHapus.setOnClickListener(v -> listener.onHapus(position));
         holder.btnDetail.setOnClickListener(v -> listener.onDetail(position));
 
-        // Add long click for update functionality
         holder.itemView.setOnLongClickListener(v -> {
             listener.onUpdate(position);
             return true;

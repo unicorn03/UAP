@@ -1,45 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
-
-    <ImageView
-        android:id="@+id/imgTanaman"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/tanaman_dua" />
+    android:background="#F2F8FF"
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/txtNama"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nama Tanaman"
-        android:textSize="24sp"
-        android:textStyle="bold"
+        android:text="GreenFresh"
         android:gravity="center"
-        android:layout_marginBottom="8dp" />
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:padding="16dp"
+        android:background="#6ACB52" />
 
-    <TextView
-        android:id="@+id/txtHarga"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Harga"
-        android:textSize="18sp"
-        android:textColor="#4CAF50"
-        android:gravity="center"
-        android:layout_marginBottom="16dp" />
+        android:background="@drawable/rounded_card"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        android:padding="20dp">
 
-    <TextView
-        android:id="@+id/txtDeskripsi"
+        <!-- Plant Image -->
+        <ImageView
+            android:id="@+id/imgTanaman"
+            android:layout_width="200dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:src="@drawable/tanaman_dua"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_border"
+            android:padding="8dp"
+            android:layout_marginBottom="20dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtNama"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daun Hijau"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#333"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_card"
+            android:padding="16dp"
+            android:layout_marginBottom="12dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/txtHarga"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp 200.000"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#333"
+                android:gravity="center" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_card"
+            android:padding="16dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:id="@+id/txtDeskripsi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tanaman ini berasal dari negara x, merupakan tanaman langka"
+                android:textSize="16sp"
+                android:textColor="#666"
+                android:lineSpacingExtra="4dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnUpdate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Deskripsi"
+        android:text="Update"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_action"
+        android:layout_margin="16dp"
+        android:padding="12dp"
         android:textSize="16sp"
-        android:lineSpacingExtra="4dp" />
+        android:textStyle="bold" />
 
 </LinearLayout>
