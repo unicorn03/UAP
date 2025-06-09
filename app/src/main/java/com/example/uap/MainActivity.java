@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //pancingan saja buat commit message
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
