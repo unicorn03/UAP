@@ -7,16 +7,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.example.uap.models.TanamanRequest;
+import com.example.uap.models.TanamanSingleResponse;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TambahTanamanActivity extends AppCompatActivity {
     EditText etNama, etHarga, etDeskripsi;
-    Button btnSimpan;
+    Button btnTambah;
     ImageView imgTanaman;
     ProgressBar progressBar;
     ApiService apiService;
@@ -33,16 +33,16 @@ public class TambahTanamanActivity extends AppCompatActivity {
         etNama = findViewById(R.id.etNama);
         etHarga = findViewById(R.id.etHarga);
         etDeskripsi = findViewById(R.id.etDeskripsi);
-        btnSimpan = findViewById(R.id.btnSimpan);
+        btnTambah = findViewById(R.id.btnSimpan); // Fixed ID to match layout
         imgTanaman = findViewById(R.id.imgTanaman);
-        progressBar = findViewById(R.id.progressBar); // Tambahkan di layout
+        progressBar = findViewById(R.id.progressBar);
 
         // Set default image
         imgTanaman.setImageResource(R.drawable.tanaman_dua);
 
-        btnSimpan.setOnClickListener(v -> {
+        btnTambah.setOnClickListener(v -> {
             if (validateInput()) {
-                saveTanaman();
+                tambahTanaman();
             }
         });
     }
@@ -73,37 +73,46 @@ public class TambahTanamanActivity extends AppCompatActivity {
         return true;
     }
 
-    private void saveTanaman() {
+    private void tambahTanaman() {
         String nama = etNama.getText().toString().trim();
         String harga = etHarga.getText().toString().trim();
         String deskripsi = etDeskripsi.getText().toString().trim();
 
-        Tanaman tanaman = new Tanaman(nama, harga, deskripsi, R.drawable.tanaman_dua);
+        // Create TanamanRequest object
+        TanamanRequest newPlant = new TanamanRequest(nama, deskripsi, harga);
 
         showLoading(true);
-        btnSimpan.setEnabled(false);
+        btnTambah.setEnabled(false);
 
-        Call<Tanaman> call = apiService.createTanaman(tanaman);
-        call.enqueue(new Callback<Tanaman>() {
+        // Use Call<Void> to match ApiService definition
+        Call<Void> call = apiService.createPlant(newPlant);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<Tanaman> call, Response<Tanaman> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 showLoading(false);
-                btnSimpan.setEnabled(true);
+                btnTambah.setEnabled(true);
 
                 if (response.isSuccessful()) {
                     Toast.makeText(TambahTanamanActivity.this,
-                            "Data berhasil disimpan", Toast.LENGTH_SHORT).show();
-                    finish(); // Kembali ke DashboardActivity
+                            "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+                    setResult(RESULT_OK);
+                    finish();
                 } else {
-                    Toast.makeText(TambahTanamanActivity.this,
-                            "Gagal menyimpan data: " + response.code(), Toast.LENGTH_SHORT).show();
+                    try {
+                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
+                        Toast.makeText(TambahTanamanActivity.this,
+                                "Gagal menambahkan data: " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
+                    } catch (Exception e) {
+                        Toast.makeText(TambahTanamanActivity.this,
+                                "Gagal menambahkan data: " + response.code(), Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<Tanaman> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 showLoading(false);
-                btnSimpan.setEnabled(true);
+                btnTambah.setEnabled(true);
                 Toast.makeText(TambahTanamanActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
