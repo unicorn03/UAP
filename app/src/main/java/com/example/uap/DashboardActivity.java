@@ -15,12 +15,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.example.uap.models.Tanaman;
-import com.example.uap.models.TanamanResponse;
-import com.example.uap.models.TanamanSingleResponse;
+import com.example.uap.models.Plant;
+import com.example.uap.models.PlantResponse;
+import com.example.uap.models.PlantSingleResponse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,8 +31,8 @@ public class DashboardActivity extends AppCompatActivity {
     Button btnTambahList;
     SwipeRefreshLayout swipeRefresh;
     ProgressBar progressBar;
-    ArrayList<Tanaman> dataList;
-    TanamanAdapter adapter;
+    ArrayList<Plant> dataList;
+    PlantAdapter adapter;
     ApiService apiService;
 
     // Activity Result Launchers
@@ -49,7 +48,7 @@ public class DashboardActivity extends AppCompatActivity {
         setupActivityLaunchers();
 
         // Initialize API service
-        apiService = ApiClient.getApiService();
+        apiService = ApiClient.getClient().create(ApiService.class);
 
         // Initialize views
         recyclerViewTanaman = findViewById(R.id.recyclerViewTanaman);
@@ -59,7 +58,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         dataList = new ArrayList<>();
 
-        adapter = new TanamanAdapter(this, dataList, new TanamanAdapter.OnItemClickListener() {
+        adapter = new PlantAdapter(this, dataList, new PlantAdapter.OnItemClickListener() {
             @Override
             public void onHapus(int pos) {
                 deleteTanaman(pos);
@@ -67,22 +66,22 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onDetail(int pos) {
-                Tanaman tanaman = dataList.get(pos);
+                Plant plant = dataList.get(pos);
                 Intent intent = new Intent(DashboardActivity.this, DetailTanamanActivity.class);
-                intent.putExtra("nama", tanaman.getPlant_name());
-                intent.putExtra("harga", tanaman.getPrice());
-                intent.putExtra("deskripsi", tanaman.getDescription());
+                intent.putExtra("nama", plant.getPlant_name());
+                intent.putExtra("harga", plant.getPrice());
+                intent.putExtra("deskripsi", plant.getDescription());
                 intent.putExtra("gambarResId", R.drawable.tanaman_dua);
                 startActivity(intent);
             }
 
             @Override
             public void onUpdate(int pos) {
-                Tanaman tanaman = dataList.get(pos);
+                Plant plant = dataList.get(pos);
                 Intent intent = new Intent(DashboardActivity.this, UpdateTanamanActivity.class);
-                intent.putExtra("nama", tanaman.getPlant_name());
-                intent.putExtra("harga", tanaman.getPrice());
-                intent.putExtra("deskripsi", tanaman.getDescription());
+                intent.putExtra("nama", plant.getPlant_name());
+                intent.putExtra("harga", plant.getPrice());
+                intent.putExtra("deskripsi", plant.getDescription());
                 intent.putExtra("gambarResId", R.drawable.tanaman_dua);
                 updateTanamanLauncher.launch(intent);
             }
@@ -151,10 +150,10 @@ public class DashboardActivity extends AppCompatActivity {
         Log.d(TAG, "Loading tanaman data...");
         showLoading(true);
 
-        Call<TanamanResponse> call = apiService.getAllPlants();
-        call.enqueue(new Callback<TanamanResponse>() {
+        Call<PlantResponse> call = apiService.getAllPlants();
+        call.enqueue(new Callback<PlantResponse>() {
             @Override
-            public void onResponse(Call<TanamanResponse> call, Response<TanamanResponse> response) {
+            public void onResponse(Call<PlantResponse> call, Response<PlantResponse> response) {
                 Log.d(TAG, "Response code: " + response.code());
                 Log.d(TAG, "Response body: " + (response.body() != null ? response.body().toString() : "null"));
 
@@ -162,15 +161,15 @@ public class DashboardActivity extends AppCompatActivity {
                 swipeRefresh.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null) {
-                    TanamanResponse tanamanResponse = response.body();
-                    Log.d(TAG, "Response message: " + tanamanResponse.getMessage());
-                    Log.d(TAG, "Data size from API: " + (tanamanResponse.getData() != null ? tanamanResponse.getData().size() : 0));
+                    PlantResponse plantResponse = response.body();
+                    Log.d(TAG, "Response message: " + plantResponse.getMessage());
+                    Log.d(TAG, "Data size from API: " + (plantResponse.getData() != null ? plantResponse.getData().size() : 0));
 
                     dataList.clear();
-                    if (tanamanResponse.getData() != null) {
-                        dataList.addAll(tanamanResponse.getData());
-                        for (Tanaman tanaman : dataList) {
-                            Log.d(TAG, "Plant: " + tanaman.getPlant_name() + ", Price: " + tanaman.getPrice() + ", Desc: " + tanaman.getDescription());
+                    if (plantResponse.getData() != null) {
+                        dataList.addAll(plantResponse.getData());
+                        for (Plant plant : dataList) {
+                            Log.d(TAG, "Plant: " + plant.getPlant_name() + ", Price: " + plant.getPrice() + ", Desc: " + plant.getDescription());
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -191,7 +190,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TanamanResponse> call, Throwable t) {
+            public void onFailure(Call<PlantResponse> call, Throwable t) {
                 Log.e(TAG, "Network error: " + t.getMessage(), t);
                 showLoading(false);
                 swipeRefresh.setRefreshing(false);
@@ -201,24 +200,24 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     private void deleteTanaman(int position) {
-        Tanaman tanaman = dataList.get(position);
+        Plant plant = dataList.get(position);
 
         // Show confirmation dialog
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Konfirmasi Hapus")
-                .setMessage("Yakin ingin menghapus " + tanaman.getPlant_name() + "?")
+                .setMessage("Yakin ingin menghapus " + plant.getPlant_name() + "?")
                 .setPositiveButton("Ya", (dialog, which) -> {
-                    performDelete(tanaman, position);
+                    performDelete(plant, position);
                 })
                 .setNegativeButton("Batal", null)
                 .show();
     }
 
-    private void performDelete(Tanaman tanaman, int position) {
-        Call<TanamanSingleResponse> call = apiService.deletePlant(tanaman.getPlant_name());
-        call.enqueue(new Callback<TanamanSingleResponse>() {
+    private void performDelete(Plant plant, int position) {
+        Call<PlantSingleResponse> call = apiService.deletePlant(plant.getPlant_name());
+        call.enqueue(new Callback<PlantSingleResponse>() {
             @Override
-            public void onResponse(Call<TanamanSingleResponse> call, Response<TanamanSingleResponse> response) {
+            public void onResponse(Call<PlantSingleResponse> call, Response<PlantSingleResponse> response) {
                 if (response.isSuccessful()) {
                     dataList.remove(position);
                     adapter.notifyItemRemoved(position);
@@ -233,7 +232,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<TanamanSingleResponse> call, Throwable t) {
+            public void onFailure(Call<PlantSingleResponse> call, Throwable t) {
                 Toast.makeText(DashboardActivity.this,
                         "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }

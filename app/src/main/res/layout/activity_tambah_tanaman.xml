@@ -1,142 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="#F2F8FF"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GreenFresh"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="#FFFFFF"
+        android:padding="16dp"
+        android:background="#6ACB52" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/rounded_card"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_margin="16dp"
+        android:padding="20dp">
 
-        <!-- Header -->
+        <ImageView
+            android:id="@+id/imgTanaman"
+            android:layout_width="150dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center"
+            android:src="@drawable/tanaman_dua"
+            android:scaleType="centerCrop"
+            android:background="@drawable/rounded_border"
+            android:padding="8dp" />
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tambah Tanaman Baru"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="#2E7D32"
-            android:gravity="center"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Card Container -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="6dp"
-            android:layout_marginBottom="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <!-- Image Preview -->
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Preview Gambar"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="#333"
-                    android:layout_marginBottom="8dp" />
-
-                <ImageView
-                    android:id="@+id/imgTanaman"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="20dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/tanaman_dua"
-                    android:background="@drawable/rounded_border"
-                    android:padding="4dp" />
-
-                <!-- Input Nama -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Nama Tanaman">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etNama"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapWords"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Input Harga -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Harga (Rp)">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etHarga"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLines="1" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Input Deskripsi -->
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="24dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:hint="Deskripsi Tanaman">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etDeskripsi"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textMultiLine"
-                        android:minLines="3"
-                        android:maxLines="5"
-                        android:gravity="top" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!-- Button Simpan -->
-                <Button
-                    android:id="@+id/btnSimpan"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:text="SIMPAN TANAMAN"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:backgroundTint="#4CAF50"
-                    android:textColor="@android:color/white"
-                    app:cornerRadius="8dp"
-                    android:elevation="4dp" />
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Progress Bar -->
-        <ProgressBar
-            android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:text="Nama Tanaman :"
+            android:textSize="16sp"
+            android:textColor="#333"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etNama"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan nama tanaman"
+            android:background="@drawable/rounded_border"
+            android:padding="12dp"
+            android:textSize="14sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Harga :"
+            android:textSize="16sp"
+            android:textColor="#333"
             android:layout_marginTop="16dp"
-            android:visibility="gone"
-            android:indeterminateTint="#4CAF50" />
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etHarga"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan harga"
+            android:background="@drawable/rounded_border"
+            android:padding="12dp"
+            android:textSize="14sp"
+            android:inputType="text" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deskripsi :"
+            android:textSize="16sp"
+            android:textColor="#333"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/etDeskripsi"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:hint="Masukkan deskripsi"
+            android:background="@drawable/rounded_border"
+            android:padding="12dp"
+            android:textSize="14sp"
+            android:gravity="top"
+            android:inputType="textMultiLine" />
 
     </LinearLayout>
 
-</ScrollView>
+    <Button
+        android:id="@+id/btnTambah"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tambah"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_action"
+        android:layout_margin="16dp"
+        android:padding="12dp"
+        android:textSize="16sp" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:indeterminateTint="#6ACB52" />
+
+</LinearLayout>

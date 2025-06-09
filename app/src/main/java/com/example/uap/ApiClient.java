@@ -6,7 +6,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
     private static final String BASE_URL = "https://uappam.kuncipintu.my.id/";
     private static Retrofit retrofit;
-    private static ApiService apiService;
 
     public static Retrofit getClient() {
         if (retrofit == null) {
@@ -16,12 +15,5 @@ public class ApiClient {
                     .build();
         }
         return retrofit;
-    }
-
-    public static ApiService getApiService() {
-        if (apiService == null) {
-            apiService = getClient().create(ApiService.class);
-        }
-        return apiService;
     }
 }

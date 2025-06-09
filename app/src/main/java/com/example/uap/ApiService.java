@@ -1,9 +1,9 @@
 package com.example.uap;
 
-import com.example.uap.models.Tanaman;
-import com.example.uap.models.TanamanRequest;
-import com.example.uap.models.TanamanResponse;
-import com.example.uap.models.TanamanSingleResponse;
+import com.example.uap.models.Plant;
+import com.example.uap.models.PlantRequest;
+import com.example.uap.models.PlantResponse;
+import com.example.uap.models.PlantSingleResponse;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -15,14 +15,14 @@ import retrofit2.http.Path;
 
 public interface ApiService {
     @GET("plant/all")
-    Call<TanamanResponse> getAllPlants();
+    Call<PlantResponse> getAllPlants();
     @POST("plant/new")
-    Call<Void> createPlant(@Body TanamanRequest plant);
+    Call<Void> createPlant(@Body PlantRequest plant);
     @PUT("plant/{name}")
-    Call<TanamanSingleResponse> updatePlant(@Path("name") String plantName, @Body Tanaman updatedPlant);
+    Call<PlantSingleResponse> updatePlant(@Path("name") String plantName, @Body Plant updatedPlant);
     @GET("plant/{name}")
-    Call<TanamanSingleResponse> getPlantByName(@Path("name") String plantName);
+    Call<PlantSingleResponse> getPlantByName(@Path("name") String plantName);
     @DELETE("plant/{name}")
-    Call<TanamanSingleResponse> deletePlant(@Path("name") String name);
+    Call<PlantSingleResponse> deletePlant(@Path("name") String name);
 
 }

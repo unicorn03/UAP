@@ -8,8 +8,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-import com.example.uap.models.TanamanRequest;
-import com.example.uap.models.TanamanSingleResponse;
+
+import com.example.uap.models.PlantRequest;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -27,19 +28,20 @@ public class TambahTanamanActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tambah_tanaman);
 
         // Initialize API service
-        apiService = ApiClient.getApiService();
+        apiService = ApiClient.getClient().create(ApiService.class);
 
-        // Initialize views
+        // Initialize views sesuai dengan layout XML
         etNama = findViewById(R.id.etNama);
         etHarga = findViewById(R.id.etHarga);
         etDeskripsi = findViewById(R.id.etDeskripsi);
-        btnTambah = findViewById(R.id.btnSimpan); // Fixed ID to match layout
+        btnTambah = findViewById(R.id.btnTambah); // ID disesuaikan dengan layout baru
         imgTanaman = findViewById(R.id.imgTanaman);
         progressBar = findViewById(R.id.progressBar);
 
         // Set default image
         imgTanaman.setImageResource(R.drawable.tanaman_dua);
 
+        // Set button click listener
         btnTambah.setOnClickListener(v -> {
             if (validateInput()) {
                 tambahTanaman();
@@ -78,8 +80,8 @@ public class TambahTanamanActivity extends AppCompatActivity {
         String harga = etHarga.getText().toString().trim();
         String deskripsi = etDeskripsi.getText().toString().trim();
 
-        // Create TanamanRequest object
-        TanamanRequest newPlant = new TanamanRequest(nama, deskripsi, harga);
+        // Create PlantRequest object
+        PlantRequest newPlant = new PlantRequest(nama, deskripsi, harga);
 
         showLoading(true);
         btnTambah.setEnabled(false);
@@ -95,8 +97,12 @@ public class TambahTanamanActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(TambahTanamanActivity.this,
                             "Data berhasil ditambahkan", Toast.LENGTH_SHORT).show();
+
+                    // Clear input fields after successful addition
+                    clearInputFields();
+
                     setResult(RESULT_OK);
-                    finish();
+                    finish(); // Kembali ke activity sebelumnya
                 } else {
                     try {
                         String errorBody = response.errorBody() != null ? response.errorBody().string() : "Unknown error";
@@ -119,9 +125,22 @@ public class TambahTanamanActivity extends AppCompatActivity {
         });
     }
 
+    private void clearInputFields() {
+        etNama.setText("");
+        etHarga.setText("");
+        etDeskripsi.setText("");
+    }
+
     private void showLoading(boolean show) {
         if (progressBar != null) {
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+
+        // Ubah text button untuk indikasi loading
+        if (show) {
+            btnTambah.setText("Menambahkan...");
+        } else {
+            btnTambah.setText("Tambah");
         }
     }
 }

@@ -11,13 +11,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.uap.models.Tanaman;
+import com.example.uap.models.Plant;
 
 import java.util.List;
 
-public class TanamanAdapter extends RecyclerView.Adapter<TanamanAdapter.ViewHolder> {
+public class PlantAdapter extends RecyclerView.Adapter<PlantAdapter.ViewHolder> {
     Context context;
-    List<Tanaman> list;
+    List<Plant> list;
     OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -26,7 +26,7 @@ public class TanamanAdapter extends RecyclerView.Adapter<TanamanAdapter.ViewHold
         void onUpdate(int pos);
     }
 
-    public TanamanAdapter(Context context, List<Tanaman> list, OnItemClickListener listener) {
+    public PlantAdapter(Context context, List<Plant> list, OnItemClickListener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
@@ -41,9 +41,9 @@ public class TanamanAdapter extends RecyclerView.Adapter<TanamanAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Tanaman t = list.get(position);
-        holder.txtNama.setText(t.getPlant_name());
-        holder.txtHarga.setText(t.getPrice());
+        Plant plant = list.get(position);
+        holder.txtNama.setText(plant.getPlant_name());
+        holder.txtHarga.setText(plant.getPrice());
         holder.imgTanaman.setImageResource(R.drawable.tanaman_dua); // Default image
 
         holder.btnHapus.setOnClickListener(v -> listener.onHapus(position));
